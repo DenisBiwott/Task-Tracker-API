@@ -30,7 +30,7 @@ routes.post('/', async (req, res) => {
   }
 });
 
-// PUT, GET and DELETE routes
+// PATCH, GET and DELETE routes
 routes
   .route('/:id')
   .get(getTaskFromID, (req, res) => {
@@ -39,9 +39,14 @@ routes
   .patch(getTaskFromID, async (req, res) => {
     let task = res.task;
 
+    // Update item if field is provided in request body
     task.text = req.body.text ? req.body.text : task.text;
     task.date = req.body.date ? req.body.date : task.date;
-    task.reminder = req.body.reminder ? req.body.reminder : task.reminder;
+    if (req.body.reminder != null) {
+      task.reminder = req.body.reminder;
+    } else {
+      task.reminder = task.reminder;
+    }
 
     try {
       const updatedTask = await task.save();
